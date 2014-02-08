@@ -6,17 +6,28 @@
 
 package com.wt;
 
+import java.io.File;
+import java.util.prefs.Preferences;
+import javax.swing.JFileChooser;
+
 /**
  *
  * @author wt
  */
 public class Mutil extends javax.swing.JFrame {
+    private static final String CURRENT_PATH = "currentpath";
+    private static final String HEADER_PATH = "headerpath";
+    
+    private File currentFile = null;
+    private File headerFile = null;
+    private Preferences preferences;
 
     /**
      * Creates new form Mutil
      */
     public Mutil() {
         initComponents();
+        initPreference();
     }
 
     /**
@@ -28,21 +39,93 @@ public class Mutil extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        display = new javax.swing.JTextArea();
+        jPanel1 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        btPreferences = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MUtil™");
+
+        jLabel1.setText("Please Load iim");
+
+        display.setColumns(20);
+        display.setRows(5);
+        jScrollPane1.setViewportView(display);
+
+        jButton1.setText("LOAD");
+
+        jButton2.setText("SAVE.PLAY");
+
+        btPreferences.setText("PREFERENCE");
+        btPreferences.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btPreferencesActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btPreferences, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btPreferences, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(259, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPreferencesActionPerformed
+        //RESET Perfernece
+        preferences.remove(HEADER_PATH);
+        preferences.remove(CURRENT_PATH);
+        initPreference();
+    }//GEN-LAST:event_btPreferencesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -80,5 +163,49 @@ public class Mutil extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btPreferences;
+    private javax.swing.JTextArea display;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
+    private void initPreference() {
+        Boolean dirty = false;
+        preferences = Preferences.userNodeForPackage(Mutil.class);
+        String currentFileName = preferences.get(CURRENT_PATH, null);
+        if(currentFileName == null){
+         
+            JFileChooser fc = new JFileChooser();
+            fc.setDialogTitle("Please select location of #Current.iim");
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fc.showSaveDialog(this);
+            File f = fc.getSelectedFile();
+            if(f != null){
+                currentFileName = f.getAbsolutePath();
+                preferences.put(CURRENT_PATH, currentFileName);
+            }
+            
+            dirty = true;
+        }
+        String headerFileName = preferences.get(HEADER_PATH,null);
+        if(headerFileName == null){
+            JFileChooser fc = new JFileChooser();
+            fc.setDialogTitle("Please select location of Header.iim");
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fc.showSaveDialog(this);
+            File f = fc.getSelectedFile();
+            if(f != null){
+                headerFileName = f.getAbsolutePath();
+                preferences.put(HEADER_PATH, headerFileName);
+            }
+            
+            dirty = true;
+        }
+        if(dirty)initPreference();
+        currentFile = new File(currentFileName);
+        headerFile = new File(headerFileName);
+    }
 }
